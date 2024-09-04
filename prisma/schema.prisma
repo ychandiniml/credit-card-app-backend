@@ -1,0 +1,33 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:../credit-card-management.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Bank {
+  bankId    Int      @id @default(autoincrement()) @map("bank_id")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  cards         Card[]     @relation("BankCards")
+
+  @@map("banks")
+}
+
+
+model Card {
+  cardId        Int       @id @default(autoincrement()) @map("card_id")
+  name          String
+  enabled       Boolean   @default(false)
+  bankId        Int       @map("bank_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  bank          Bank      @relation("BankCards", fields: [bankId], references: [bankId])
+
+  @@map("cards")
+}
